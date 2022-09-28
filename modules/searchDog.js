@@ -13,6 +13,21 @@ const yunnanSourcing = {
   listOfTeas: [],
 };
 
+// class teaWebsite = {
+//     constructor(url, searchBoxSelector, searchButtonSelector, productGridSelector, productCardSelector, priceSelector, nameSelector, descriptionSelector) {
+//         this.url = url;
+//         this.searchBoxSelector = searchBoxSelector;
+//         this.searchButtonSelector = searchButtonSelector;
+//         this.productGridSelector = productGridSelector;
+//         this.productCardSelector = productCardSelector;
+//         this.priceSelector = priceSelector;
+//         this.nameSelector = nameSelector;
+//         this.descriptionSelector = descriptionSelector;
+//     }
+// }
+
+// const yunnanSourcing = new teaWebsite("https://yunnansourcing.us/", "input[placeholder='What are you looking for?']", ".live-search-button", ".products-per-row-4")
+
 const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
   const {
     url,
@@ -26,7 +41,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
   } = teaWebsite;
 
   console.log("Is product card selector here? ", productCardSelector);
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: "networkidle0" });
   await page.waitForSelector(searchBoxSelector);
@@ -40,7 +55,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     nameSelector,
     descriptionSelector
   }
-  const rawHTMLOfProducts = await page.$eval(productGridSelector, (child, config) => {
+  const scrapedTeas = await page.$eval(productGridSelector, (child, config) => {
     let results = Array.from(child.querySelectorAll(config.productCardSelector)).map(
       (el) => el.innerHTML
     );
@@ -64,15 +79,16 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     return teaObjectArray;
   }, config);
   // console.log('Raw HTML: ', rawHTMLOfProducts);
-  console.log("First one: ", rawHTMLOfProducts[0]);
-  console.log("Length: ", rawHTMLOfProducts.length);
-  console.log("Type: ", typeof rawHTMLOfProducts);
+  console.log("First one: ", scrapedTeas[0]);
+  console.log("Length: ", scrapedTeas.length);
+  console.log("Type: ", typeof scrapedTeas);
   // fs.writeFileSync('rawHTMLOfProducts.json', rawHTMLOfProducts)
   // console.log('Type of: ', typeof rawHTMLOfProducts);
   await page.screenshot({ path: "exmaple.png" });
   await browser.close();
+  return scrapedTeas
 };
 
-teaWebsiteCrawler(yunnanSourcing, "oolong");
+// teaWebsiteCrawler(yunnanSourcing, "tieguanyin");
 
 module.exports = teaWebsiteCrawler;
