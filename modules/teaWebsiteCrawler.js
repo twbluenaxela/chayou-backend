@@ -104,7 +104,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     nameSelector,
     descriptionSelector,
   };
-
+  await page.waitForSelector(productCardSelector)
   const scrapedTeas = await page.$eval(
     productGridSelector,
     (child, config) => {
@@ -127,21 +127,28 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
         if(errorNode) {
           alert('Error!')
         }
-        // console.log('Price: ', fragment.querySelector(config.priceSelector).textContent)
+        console.log('Price: ', fragment.querySelector(config.priceSelector).textContent)
+        console.log('Name: ', fragment.querySelector(config.nameSelector).textContent.trim());
+        // console.log('Description: ', fragment
+        // .querySelector(config.descriptionSelector)
+        // .textContent.trim());
         let teaObject = {
           price: fragment.querySelector(config.priceSelector).textContent,
           name: fragment.querySelector(config.nameSelector).textContent.trim(),
-          description: fragment
-            .querySelector(config.descriptionSelector)
-            .textContent.trim() ,
+          description: config.descriptionSelector !== "" ?
+           fragment
+          .querySelector(config.descriptionSelector)
+          .textContent.trim()
+          : "",
         };
+        // console.log('Tea object: ', teaObject)
         return teaObject;
       });
       return teaObjectArray;
     },
     config
   );
-  console.log('Scraped Teas: ', scrapedTeas);
+  // console.log('Scraped Teas: ', scrapedTeas);
   console.log("First one: ", scrapedTeas[0]);
   console.log("Length: ", scrapedTeas.length);
   console.log("Type: ", typeof scrapedTeas);
