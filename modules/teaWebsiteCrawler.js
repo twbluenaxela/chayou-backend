@@ -71,6 +71,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     popup,
     popupCloseButton,
     searchPageLink,
+    imgSelector,
   } = teaWebsite;
 
   // console.log("Is product card selector here? ", productCardSelector);
@@ -103,6 +104,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     priceSelector,
     nameSelector,
     descriptionSelector,
+    imgSelector
   };
   await page.waitForSelector(productCardSelector)
   const scrapedTeas = await page.$eval(
@@ -111,7 +113,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
       debugger;
       let results = Array.from(
         child.querySelectorAll(config.productCardSelector)
-      ).map((el, index) => el.innerHTML);
+      ).map((el) => el.innerHTML);
       console.log('Results: ', results)
       let teaObjectArray = results.map((product) => {
         /**
@@ -135,11 +137,12 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
         let teaObject = {
           price: fragment.querySelector(config.priceSelector).textContent,
           name: fragment.querySelector(config.nameSelector).textContent.trim(),
-          description: config.descriptionSelector !== "" ?
-           fragment
+          description: config.descriptionSelector !== "" 
+          ? fragment
           .querySelector(config.descriptionSelector)
           .textContent.trim()
           : "",
+          imageLink: fragment.querySelector(config.imgSelector).src
         };
         // console.log('Tea object: ', teaObject)
         return teaObject;
