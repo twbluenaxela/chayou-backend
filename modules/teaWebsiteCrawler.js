@@ -74,6 +74,12 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     await page.click(popupCloseButton);
   }
   await page.waitForSelector(productGridSelector);
+  /**
+   * Problem: we cannot directly use the selectors already imported from the teaWebsite object directly into puppeteers 
+   * $eval function, because it is running in an entirely seperate environment, the headless browser.
+   * Solution: put all the selectors in an object, then pass that object as an argument into the callback function argument. 
+   * From there you can use your previously defined selectors, and get the data you want. 
+   */
   const config = {
     productCardSelector,
     priceSelector,
@@ -89,7 +95,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
       let results = Array.from(
         child.querySelectorAll(config.productCardSelector)
       ).map((el) => el.innerHTML);
-      console.log('Results: ', results)
+      // console.log('Results: ', results)
       let teaObjectArray = results.map((product) => {
         /**
          * Problem: When grabbing the innerHTML for each element, the result given
@@ -98,12 +104,13 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
          */
         const parser = new DOMParser()
         const fragment = parser.parseFromString(product, 'text/html')
-        const errorNode = fragment.querySelector('parsererror')
-        if(errorNode) {
-          alert('Error!')
-        }
         // console.log('Price: ', fragment.querySelector(config.priceSelector).textContent)
         // console.log('Name: ', fragment.querySelector(config.nameSelector).textContent.trim());
+        /**
+         * Problem: Sometimes a website may not have a description for each tea. They might only have an image, name, and price.
+         * That is fine, but if the querySelector function takes "" as an argument, it will get mad and won't let you continue. 
+         * Solution: Check if the descriptionSelector is blank or not, and then assign it a value, or keep it blank by default. 
+         */
         let teaObject = {
           price: fragment.querySelector(config.priceSelector).textContent,
           name: fragment.querySelector(config.nameSelector).textContent.trim(),
@@ -112,7 +119,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
           .querySelector(config.descriptionSelector)
           .textContent.trim()
           : "",
-          imageLink: fragment.querySelector(config.imgSelector).src
+          imageLink: fragment.querySelector(config.imgSelector).src,
         };
         // console.log('Tea object: ', teaObject)
         return teaObject;
