@@ -1,15 +1,6 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 
-// const { DEFAULT_INTERCEPT_RESOLUTION_PRIORITY } = require('puppeteer')
-// const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
-// puppeteer.use(
-//   AdblockerPlugin({
-//     // Optionally enable Cooperative Mode for several request interceptors
-//     interceptResolutionPriority: DEFAULT_INTERCEPT_RESOLUTION_PRIORITY
-//   })
-// )
-
 const yunnanSourcing = {
   url: "https://yunnansourcing.us",
   searchUrl: "https://yunnansourcing.us/search?type=product&q=",
@@ -55,7 +46,6 @@ const teaAndWhisk = {
 //     }
 // }
 
-// const yunnanSourcing = new teaWebsite("https://yunnansourcing.us/", "input[placeholder='What are you looking for?']", ".live-search-button", ".products-per-row-4")
 
 const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
   const {
@@ -74,31 +64,16 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     imgSelector,
   } = teaWebsite;
 
-  // console.log("Is product card selector here? ", productCardSelector);
   //{ headless: false, devtools: true }
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.setUserAgent(
-       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36');
-  await page.goto(`${searchUrl}${searchTerm}*`, { waitUntil: "networkidle0" });
+  await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36');
+  await page.goto(`${searchUrl}${searchTerm}`, { waitUntil: "networkidle0" });
   if (popup !== "" && popup !== undefined) {
-    // console.log('There is a popup! ', popup);
     await page.waitForSelector(popupCloseButton);
-    // await page.keyboard.press('Escape')
     await page.click(popupCloseButton);
-    // await page.click(searchButtonSelector)
-    // page.on('dialog', async dialog => {
-    //   console.log(dialog.message());
-    //   await dialog.dismiss();
-    // });
   }
-  // await page.waitForSelector(searchBoxSelector);
-  // console.log('Found search box!');
-  // await page.waitForSelector(searchButtonSelector);
-  // await page.type(searchBoxSelector, searchTerm);
-  // await page.click(searchButtonSelector);
   await page.waitForSelector(productGridSelector);
-  // await page.waitForSelector(productCardSelector)
   const config = {
     productCardSelector,
     priceSelector,
@@ -121,19 +96,14 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
          * back to us is a string. We cannot call querySelectors on strings.
          * So we have to change it back into an HTML element, then run querySelector on it.
          */
-        // const range = document.createRange();
-        // const fragment = range.createContextualFragment(product);
         const parser = new DOMParser()
         const fragment = parser.parseFromString(product, 'text/html')
         const errorNode = fragment.querySelector('parsererror')
         if(errorNode) {
           alert('Error!')
         }
-        console.log('Price: ', fragment.querySelector(config.priceSelector).textContent)
-        console.log('Name: ', fragment.querySelector(config.nameSelector).textContent.trim());
-        // console.log('Description: ', fragment
-        // .querySelector(config.descriptionSelector)
-        // .textContent.trim());
+        // console.log('Price: ', fragment.querySelector(config.priceSelector).textContent)
+        // console.log('Name: ', fragment.querySelector(config.nameSelector).textContent.trim());
         let teaObject = {
           price: fragment.querySelector(config.priceSelector).textContent,
           name: fragment.querySelector(config.nameSelector).textContent.trim(),
@@ -152,9 +122,9 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     config
   );
   // console.log('Scraped Teas: ', scrapedTeas);
-  console.log("First one: ", scrapedTeas[0]);
-  console.log("Length: ", scrapedTeas.length);
-  console.log("Type: ", typeof scrapedTeas);
+  // console.log("First one: ", scrapedTeas[0]);
+  // console.log("Length: ", scrapedTeas.length);
+  // console.log("Type: ", typeof scrapedTeas);
   await browser.close();
   return scrapedTeas;
 };
