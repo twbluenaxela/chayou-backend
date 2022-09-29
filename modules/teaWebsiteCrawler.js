@@ -4,6 +4,7 @@ const fs = require("fs");
 const yunnanSourcing = {
   url: "https://yunnansourcing.us",
   searchUrl: "https://yunnansourcing.us/search?type=product&q=",
+  productUrlSelector: "h2 > a",
   searchBoxSelector: "input[placeholder='What are you looking for?']",
   searchButtonSelector: ".live-search-button",
   productGridSelector: ".products-per-row-4",
@@ -11,13 +12,15 @@ const yunnanSourcing = {
   priceSelector: ".money.price__current--min",
   nameSelector: "a:not(.productitem--image-link)",
   descriptionSelector: ".productitem--description > p",
-  imgSelector: "",
+  imgSelector: "img.productitem--image-primary",
   popup: "",
+  popupCloseButton: "",
 };
 
 const teaAndWhisk = {
   url: "https://teaandwhisk.com",
   searchUrl: "https://teaandwhisk.com/pages/search-results-page?q=",
+  productUrlSelector: ".snize-view-link",
   searchBoxSelector: "input[type='search']",
   searchButtonSelector: "div.input-group-btn > button",
   productGridSelector: "ul.snize-search-results-content",
@@ -27,8 +30,7 @@ const teaAndWhisk = {
   descriptionSelector: "",
   imgSelector: "img.snize-item-image",
   popup: "div.needsclick.kl-private-reset-css-Xuajs1",
-  popupCloseButton: ".needsclick.klaviyo-close-form",
-  searchPageLink: "https://teaandwhisk.com/search",
+  popupCloseButton: ".needsclick.klaviyo-close-form"
 };
 
 //So I think it would probably be in my best interests to just make a class that has all the parameters I need, every single time. But I haven't decided on it yet, because I would also
@@ -51,8 +53,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
   const {
     url,
     searchUrl,
-    searchBoxSelector,
-    searchButtonSelector,
+    productUrlSelector,
     productGridSelector,
     productCardSelector,
     priceSelector,
@@ -60,7 +61,6 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     descriptionSelector,
     popup,
     popupCloseButton,
-    searchPageLink,
     imgSelector,
   } = teaWebsite;
 
@@ -85,7 +85,8 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     priceSelector,
     nameSelector,
     descriptionSelector,
-    imgSelector
+    imgSelector,
+    productUrlSelector,
   };
   await page.waitForSelector(productCardSelector)
   const scrapedTeas = await page.$eval(
@@ -120,6 +121,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
           .textContent.trim()
           : "",
           imageLink: fragment.querySelector(config.imgSelector).src,
+          productUrl: fragment.querySelector(config.productUrlSelector).href,
         };
         // console.log('Tea object: ', teaObject)
         return teaObject;
