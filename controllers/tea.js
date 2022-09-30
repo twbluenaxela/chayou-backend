@@ -52,18 +52,23 @@ teaRouter.get("/", async (request, response) => {
 teaRouter.get("/:teaToSearchFor", async (request, response) => {
   const teaToSearchFor = request.params["teaToSearchFor"];
   //replaces underscores with space
-  const formattedSearchTerm = teaToSearchFor.replace(/_/g, ' ')
-  logger.info(`Searching for: ${formattedSearchTerm}`);
+  const formattedSearchTerm = teaToSearchFor.replace(/_/g, '%20')
+  const humanReadableSearchTerm = teaToSearchFor.replace(/_/g, ' ')
+  logger.info(`Searching for: ${humanReadableSearchTerm}`);
 
   const yunnanSourcingResults = await teaWebsiteCrawler(yunnanSourcing, formattedSearchTerm)
   const teaAndWhiskResults = await teaWebsiteCrawler(teaAndWhisk, formattedSearchTerm)
-  console.log("Yunnan sourcing teas: ",yunnanSourcingResults)
+  console.log("Yunnan sourcing teas: ", yunnanSourcingResults)
   console.log('Tea and whisk teas: ', teaAndWhiskResults);
   const resultsArray = [...yunnanSourcingResults, ...teaAndWhiskResults]
   if(resultsArray){
     console.log('Combined results: ', resultsArray)
     response.json(resultsArray)
   }else{
+    /**
+     * So this will most likely not happen because one of the websites Tea and Whisk will by default send you the
+     * information for Original Tongmu Jinjunmei. But just in case, that their website changes and doesn't have a default value, I'll leave this here. 
+     */
     response.status(401).json({ error: "Could not find any results. Please try adjusting your search terms and try again." })
   }
 });

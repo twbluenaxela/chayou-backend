@@ -73,7 +73,13 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
     await page.waitForSelector(popupCloseButton);
     await page.click(popupCloseButton);
   }
-  await page.waitForSelector(productGridSelector);
+  try {
+    await page.waitForSelector(productGridSelector, { timeout: 2500 });
+  }catch(error) {
+    console.log('Error!', error)
+    return []
+  }
+
   /**
    * Problem: we cannot directly use the selectors already imported from the teaWebsite object directly into puppeteers 
    * $eval function, because it is running in an entirely seperate environment, the headless browser.
