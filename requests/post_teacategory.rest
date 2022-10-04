@@ -1,0 +1,8 @@
+POST http://localhost:3003/api/category
+Content-Type: application/json
+
+{
+    "englishName": "Oriental Beauty",
+    "chineseName": "東方美人",
+    "type": "green"
+}
