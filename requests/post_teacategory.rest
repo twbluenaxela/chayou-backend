@@ -2,7 +2,7 @@ POST http://localhost:3003/api/category
 Content-Type: application/json
 
 {
-    "englishName": "Oriental Beauty",
-    "chineseName": "東方美人",
-    "type": "green"
+    "englishName": "jin jun mei",
+    "chineseName": "金駿眉",
+    "type": "black"
 }

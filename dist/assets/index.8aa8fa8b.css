@@ -1,0 +1,1 @@
+.teaCard{--init-text-color: initial;--init-background: var(--background, initial)}.teaCard:hover{box-shadow:0 8px 20px 5px #9c9c9c;transition:.2s}.teaCardBody:hover{background:white;color:inherit!important}
