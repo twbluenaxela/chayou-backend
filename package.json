@@ -27,7 +27,8 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "build:ui": "rm -rf dist && cd ../chayou && npm run build && cp -r dist ../chayou-backend" 
+    "build:ui": "rm -rf dist && cd ../chayou && npm run build && cp -r dist ../chayou-backend",
+    "deploy": "npm run build:ui && flyctl deploy"
 
   }
 }
