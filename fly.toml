@@ -7,7 +7,6 @@ processes = []
 
 [build]
   builder = "heroku/buildpacks:20"
-  dockerfile = "dockerfile"
 
 [env]
   PORT = "8080"
