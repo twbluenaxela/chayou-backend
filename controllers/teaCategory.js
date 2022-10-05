@@ -14,6 +14,7 @@ teaCategoryRouter.get('/', async (req, res) => {
 
 teaCategoryRouter.get('/:type', async (req, res) => {
     const teaCategoryToSearchFor = req.params['type']
+    logger.info(`Server received: ${teaCategoryToSearchFor}`)
     const matchedTeaCategories = await TeaCategory.find({ type: teaCategoryToSearchFor })
 
     if(matchedTeaCategories){

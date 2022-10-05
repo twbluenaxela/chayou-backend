@@ -22,7 +22,6 @@
   "description": "Handles user data from database, login auth, and searching of different online tea stores",
   "version": "1.0.0",
   "main": "index.js",
-  "proxy": "chayou.fly.dev",
   "scripts": {
     "test": "cross-env NODE_ENV=testing jest --verbose --runInBand --forceExit",
     "start": "cross-env NODE_ENV=production node index.js",

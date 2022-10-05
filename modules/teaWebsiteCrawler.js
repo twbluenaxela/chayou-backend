@@ -65,7 +65,7 @@ const teaWebsiteCrawler = async (teaWebsite, searchTerm) => {
   } = teaWebsite;
 
   //{ headless: false, devtools: true }
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome' });
   const page = await browser.newPage();
   await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36');
   await page.goto(`${searchUrl}${searchTerm}`, { waitUntil: "networkidle0" });
